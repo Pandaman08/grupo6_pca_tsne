@@ -70,4 +70,4 @@ def validate_clustering_pipeline(X, n_components=2, n_clusters=3):
         'scores': scores,
         'mean': scores.mean(),
         'std': scores.std()
-    }  # ✅ SIN COMA
+    }  
