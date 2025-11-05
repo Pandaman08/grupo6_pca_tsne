@@ -1,6 +1,6 @@
 # test_pca_module.py
 import numpy as np
-from src.pca_module import run_pca, plot_pca_variance, plot_pca_2d, plot_pca_3d
+from src.pca_module_testsafe import run_pca, plot_pca_variance, plot_pca_2d, plot_pca_3d
 
 X_dummy = np.random.rand(100, 5)
 

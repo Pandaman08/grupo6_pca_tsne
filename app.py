@@ -3,7 +3,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 from src.utils import load_and_preprocess
-from src.pca_module import run_pca, plot_pca_variance, plot_pca_2d, plot_pca_3d
+from src.pca_module import run_pca, plot_pca_variance, plot_pca_2d, plot_pca_3d, plot_pca_loadings
 from src.tsne_module import run_tsne, plot_tsne_2d, plot_tsne_3d 
 from src.evaluation import (
     run_clustering_comparison, 
@@ -20,9 +20,9 @@ uploaded_file = st.file_uploader("Sube un archivo CSV", type=["csv"])
 
 if uploaded_file is None:
     st.info("Usando dataset de ejemplo (Iris).")
-    X, y = load_and_preprocess(None)  # ✅ Recibir ambos
+    X, y, feature_names = load_and_preprocess(None)
 else:
-    X, y = load_and_preprocess(uploaded_file)  # ✅ Recibir ambos
+    X, y, feature_names = load_and_preprocess(uploaded_file)
 
 if X is None:
     st.stop()
@@ -47,6 +47,14 @@ with col1:
         'Acumulada %': np.cumsum(pca_result['explained_variance_ratio']) * 100
     })
     st.dataframe(variance_df)
+    
+    st.subheader("Loadings (Contribución de variables)")
+    fig_loadings = plot_pca_loadings(
+        pca_result['components'],
+        feature_names,
+        n_components=n_components_pca
+    )
+    st.pyplot(fig_loadings)
 
 with col2:
     if n_components_pca >= 3:
@@ -57,6 +65,12 @@ with col2:
         st.subheader("Visualización 2D (PCA)")
         fig_pca_2d = plot_pca_2d(pca_result['transformed'])
         st.pyplot(fig_pca_2d)
+    st.subheader("Valores de cada muestra en los componentes principales")
+    pca_df = pd.DataFrame(
+        pca_result['transformed'],
+        columns=[f'PC{i+1}' for i in range(pca_result['transformed'].shape[1])]
+    )
+    st.dataframe(pca_df.head(20))
 
 # --- t-SNE ---
 st.header("3. Análisis con t-SNE")

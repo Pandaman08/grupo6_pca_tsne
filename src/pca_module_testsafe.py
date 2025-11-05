@@ -1,10 +1,13 @@
-# pca_module.py
+import matplotlib
+matplotlib.use('Agg')  # Evita errores de Tkinter en entornos sin GUI
+
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.decomposition import PCA
 import seaborn as sns
-import matplotlib.pyplot as plt
 import pandas as pd
+import plotly.graph_objects as go
+
 
 def run_pca(X, n_components):
     pca = PCA(n_components=n_components)
@@ -15,14 +18,16 @@ def run_pca(X, n_components):
         'components': pca.components_
     }
 
+
 def plot_pca_variance(explained_variance_ratio):
     cumsum = np.cumsum(explained_variance_ratio)
     fig, ax = plt.subplots()
-    ax.plot(range(1, len(cumsum)+1), cumsum, marker='o')
+    ax.plot(range(1, len(cumsum) + 1), cumsum, marker='o')
     ax.set_xlabel('Número de componentes')
     ax.set_ylabel('Varianza explicada acumulada')
     ax.grid(True)
     return fig
+
 
 def plot_pca_2d(X_pca):
     fig, ax = plt.subplots()
@@ -31,8 +36,8 @@ def plot_pca_2d(X_pca):
     ax.set_ylabel('PC2')
     return fig
 
+
 def plot_pca_3d(X_pca):
-    import plotly.graph_objects as go
     fig = go.Figure(data=[go.Scatter3d(
         x=X_pca[:, 0], y=X_pca[:, 1], z=X_pca[:, 2],
         mode='markers', marker=dict(size=4, opacity=0.8)
@@ -44,15 +49,13 @@ def plot_pca_3d(X_pca):
     ))
     return fig
 
+
 def plot_pca_loadings(components, feature_names, n_components=2):
     """Grafica los loadings de los primeros n_components."""
-    
-
-    # Tomar solo los primeros n_components
-    loadings = components[:n_components].T  # Transponer para que filas = features
+    loadings = components[:n_components].T  # Filas = features
     df_loadings = pd.DataFrame(
         loadings,
-        columns=[f'PC{i+1}' for i in range(n_components)],
+        columns=[f'PC{i + 1}' for i in range(n_components)],
         index=feature_names
     )
 
