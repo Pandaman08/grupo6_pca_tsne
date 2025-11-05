@@ -64,7 +64,7 @@ with col2:
     else:
         st.subheader("Visualización 2D (PCA)")
         fig_pca_2d = plot_pca_2d(pca_result['transformed'])
-        st.pyplot(fig_pca_2d)
+        st.plotly_chart(fig_pca_2d)
     st.subheader("Valores de cada muestra en los componentes principales")
     pca_df = pd.DataFrame(
         pca_result['transformed'],

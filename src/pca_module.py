@@ -5,6 +5,7 @@ from sklearn.decomposition import PCA
 import seaborn as sns
 import matplotlib.pyplot as plt
 import pandas as pd
+import plotly.express as px
 
 def run_pca(X, n_components):
     pca = PCA(n_components=n_components)
@@ -25,10 +26,19 @@ def plot_pca_variance(explained_variance_ratio):
     return fig
 
 def plot_pca_2d(X_pca):
-    fig, ax = plt.subplots()
-    ax.scatter(X_pca[:, 0], X_pca[:, 1], alpha=0.7)
-    ax.set_xlabel('PC1')
-    ax.set_ylabel('PC2')
+    df = pd.DataFrame(X_pca, columns=['PC1', 'PC2'])
+    fig = px.scatter(
+        df, x='PC1', y='PC2',
+        title='Proyección PCA (2D)',
+        opacity=0.8,
+        width=700, height=500
+    )
+    fig.update_traces(marker=dict(size=6))
+    fig.update_layout(
+        xaxis_title='PC1',
+        yaxis_title='PC2',
+        template='plotly_white'
+    )
     return fig
 
 def plot_pca_3d(X_pca):
@@ -45,19 +55,15 @@ def plot_pca_3d(X_pca):
     return fig
 
 def plot_pca_loadings(components, feature_names, n_components=2):
-    """Grafica los loadings de los primeros n_components."""
-    
-
-    # Tomar solo los primeros n_components
-    loadings = components[:n_components].T  # Transponer para que filas = features
+    loadings = components[:n_components].T 
     df_loadings = pd.DataFrame(
         loadings,
         columns=[f'PC{i+1}' for i in range(n_components)],
         index=feature_names
     )
-
     fig, ax = plt.subplots(figsize=(8, 4))
     sns.heatmap(df_loadings, annot=True, cmap='RdBu_r', center=0, ax=ax)
     ax.set_title('Loadings: Contribución de cada variable a los componentes')
     plt.tight_layout()
     return fig
+
